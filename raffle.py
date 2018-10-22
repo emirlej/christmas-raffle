@@ -18,12 +18,11 @@ def main():
     """ Main flow """
     pairs = read_pairs_files("pairs.json")
     
-    # Create the givers and creaters list
-    givers = all_names_to_list(pairs)
-    print(givers.copy())
-    #receivers = all_names_to_list(pairs)
+    # Create the givers and receivers lists
+    givers, receivers = all_names_to_list(pairs), all_names_to_list(pairs)
 
-    print(givers)
+
+
 
 if __name__ == "__main__":
     main()
