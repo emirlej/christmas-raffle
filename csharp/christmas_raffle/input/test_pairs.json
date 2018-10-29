@@ -1,0 +1,12 @@
+{
+    "Pairs" : [
+        {
+            "FirstName": "John",
+            "SecondName": "Jane"
+        },
+        {
+            "FirstName": "Ola",
+            "SecondName": "Kari"
+        }
+    ]
+}
