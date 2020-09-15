@@ -8,7 +8,7 @@ from datetime import datetime
 def read_pairs_files(fpath):
     with open(fpath, "r") as FILE:
         pairs = json.load(FILE)
-    return(pairs)
+    return pairs
 
 
 def all_names_to_list(pairs):
@@ -16,7 +16,7 @@ def all_names_to_list(pairs):
     for _, v in pairs.items():
         for name in v:
             names.append(name)
-    return(names)
+    return names
 
 
 def check_if_names_are_pair(x, y, pairs):
@@ -25,16 +25,17 @@ def check_if_names_are_pair(x, y, pairs):
     for k, v in pairs.items():
         if (x in v) and (y in v):
             is_pair = True
-    return(is_pair)
+    return is_pair
 
 
 def get_length_of_two_lists(x, y):
-    return(sum(list(map(len, [x, y]))))
+    return sum(list(map(len, [x, y])))
 
 
-def main():
+def main(is_pair_check=True):
     """ Main flow """
-    pairs = read_pairs_files("pairs.json")
+    file_name = "pairs.json"
+    pairs = read_pairs_files(file_name)
     tmp_results = []
 
     # Create the givers and receivers lists
@@ -48,13 +49,17 @@ def main():
 
         giver = random.choice(givers)
         receiver = random.choice(receivers)
-        is_pair = check_if_names_are_pair(giver, receiver, pairs)
+
+        if is_pair_check:
+            is_pair = check_if_names_are_pair(giver, receiver, pairs)
+        else:
+            is_pair = False
 
         # Try again if same pair, remove people from list if noe
-        if is_pair:
+        if is_pair or (giver == receiver):
             # If only two people are left and they are a pair
             if get_length_of_two_lists(givers, receivers) == 2:
-                tmp_results.clear() # Clear the list
+                tmp_results.clear()  # Clear the list
                 givers, receivers = all_names_to_list(pairs), all_names_to_list(pairs)
                 continue
             else:
@@ -66,8 +71,9 @@ def main():
 
     # Convert into a dataframe
     results = pd.DataFrame(tmp_results, columns=["Giver", "Mottaker"])
-    fname = "juletrekning_{}.csv".format(datetime.now().year)
-    fpath = os.path.join("results", fname)
+    outfile = f"juletrekning_{file_name.split('.')[0]}_{datetime.now().year}.csv"
+    # fname = "juletrekning_{}.csv".format(datetime.now().year)
+    fpath = os.path.join("results", outfile)
 
     # Create file only if it does not exist
     if not os.path.exists(fpath):
