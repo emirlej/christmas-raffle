@@ -1,6 +1,8 @@
 import os
 import random
 import json
+
+import fire
 import pandas as pd
 from datetime import datetime
 
@@ -20,7 +22,7 @@ def all_names_to_list(pairs):
 
 
 def check_if_names_are_pair(x, y, pairs):
-    """ Check if name x and y are a pairs """
+    """Check if name x and y are a pairs"""
     is_pair = False
     for k, v in pairs.items():
         if (x in v) and (y in v):
@@ -32,10 +34,9 @@ def get_length_of_two_lists(x, y):
     return sum(list(map(len, [x, y])))
 
 
-def main(is_pair_check=True):
-    """ Main flow """
-    file_name = "pairs.json"
-    pairs = read_pairs_files(file_name)
+def main(pair_file):
+    """Main flow"""
+    pairs = read_pairs_files(pair_file)
     tmp_results = []
 
     # Create the givers and receivers lists
@@ -50,10 +51,7 @@ def main(is_pair_check=True):
         giver = random.choice(givers)
         receiver = random.choice(receivers)
 
-        if is_pair_check:
-            is_pair = check_if_names_are_pair(giver, receiver, pairs)
-        else:
-            is_pair = False
+        is_pair = check_if_names_are_pair(giver, receiver, pairs)
 
         # Try again if same pair, remove people from list if noe
         if is_pair or (giver == receiver):
@@ -71,7 +69,10 @@ def main(is_pair_check=True):
 
     # Convert into a dataframe
     results = pd.DataFrame(tmp_results, columns=["Giver", "Mottaker"])
-    outfile = f"juletrekning_{file_name.split('.')[0]}_{datetime.now().year}.csv"
+
+    print(results.to_markdown(index=False))
+
+    outfile = f"juletrekning_{pair_file.split('.')[0]}_{datetime.now().year}.csv"
     # fname = "juletrekning_{}.csv".format(datetime.now().year)
     fpath = os.path.join("results", outfile)
 
@@ -83,4 +84,4 @@ def main(is_pair_check=True):
 
 
 if __name__ == "__main__":
-    main()
+    fire.Fire(main)
